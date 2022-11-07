@@ -7,10 +7,10 @@
  *   register
  ******************************************************************************/ 
 
-#include "ll_process_config.h"
+#include "../header/ll_process_config.h"
 #include "stdbool.h"
-#include "modbus_registers.h"
-#include "mcc_generated_files/mcc.h"
+#include "../header/modbus_registers.h"
+#include "../header/hardware.h"
 
 
 /*******************************************************************************
@@ -21,10 +21,10 @@
 void configInit(void)
 {
     //read id from dip switch
-    uint8_t address = (uint8_t)(!(ID3_GetValue() & 0x01) << 3);
-    address += (uint8_t)(!(ID2_GetValue() & 0x01) << 2);
-    address += (uint8_t)(!(ID1_GetValue() & 0x01) << 1);
-    address += (uint8_t)(!(ID0_GetValue() & 0x01) << 0);
+    uint8_t address = (uint8_t)(!(MCC_ID3_GetValue() & 0x01) << 3);
+    address += (uint8_t)(!(MCC_ID2_GetValue() & 0x01) << 2);
+    address += (uint8_t)(!(MCC_ID1_GetValue() & 0x01) << 1);
+    address += (uint8_t)(!(MCC_ID0_GetValue() & 0x01) << 0);
     modbus_registers[IND_MODBUS_ID] = address;
     
     //read baudrate from eeprom
@@ -44,20 +44,16 @@ void configInit(void)
     switch (baudrate)
     {
         case 1:  //115.2 kbps
-            SPBRG1 = 0x8A;
-            SPBRGH1 = 0x00;
+            Set_Baudrate(0x8A,0x00);
             break;
         case 2:  //250 kbps
-            SPBRG1 = 63;
-            SPBRGH1 = 0x00;
+            Set_Baudrate(63,0x00);
             break;
         case 3:  //500 kbps
-            SPBRG1 = 31;
-            SPBRGH1 = 0x00;
+            Set_Baudrate(31,0x00);
             break;
         case 4:  //1 mbps
-            SPBRG1 = 15;
-            SPBRGH1 = 0x00;
+            Set_Baudrate(15,0x00);
             break;
     }   
 
@@ -82,7 +78,7 @@ void configInit(void)
     modbus_registers[IND_CONFIG_SAFETY_OUTPUT] = config_safety_output;
     
     //call config process for the first time
-    configProcess();
+    // configProcess();
 }
 
 
@@ -144,8 +140,8 @@ void configProcess(void)
 
 uint16_t configReadEeprom16(uint8_t address)
 {
-    return ((uint16_t)(DATAEE_ReadByte(address * 2)) << 8) |
-            ((uint16_t)(DATAEE_ReadByte(address * 2 + 1)));
+    return ((uint16_t)(MCC_DATAEE_ReadByte(address * 2)) << 8) |
+            ((uint16_t)(MCC_DATAEE_ReadByte(address * 2 + 1)));
 }
 
 
@@ -156,6 +152,6 @@ uint16_t configReadEeprom16(uint8_t address)
 
 void configWriteEeprom16(uint8_t address, uint16_t data)
 {
-    DATAEE_WriteByte((address * 2), (uint8_t)(data >> 8));
-    DATAEE_WriteByte((address * 2 + 1), (uint8_t)(data & 0xff));    
+    MCC_DATAEE_WriteByte((address * 2), (uint8_t)(data >> 8));
+    MCC_DATAEE_WriteByte((address * 2 + 1), (uint8_t)(data & 0xff));    
 }

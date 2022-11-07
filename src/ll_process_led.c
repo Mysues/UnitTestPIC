@@ -7,9 +7,10 @@
  *   passed for the LED processes as it is timing critical
  ******************************************************************************/ 
 
-#include "ll_process_led.h"
-#include "modbus_registers.h"
-#include "mcc_generated_files/mcc.h"
+#include "../header/ll_process_led.h"
+#include "../header/modbus_registers.h"
+#include "../mcc_generated_files/mcc.h"
+#include "../header/hardware.h"
 #include "stdbool.h"
 
 /*******************************************************************************
@@ -50,7 +51,7 @@ void ledInterruptHandler(
 
 void ledInit(void)
 {
-    __delay_ms(10);
+    uC_delay_ms(10);
     led1Reset();
     led2Reset();
     interruptDisable();

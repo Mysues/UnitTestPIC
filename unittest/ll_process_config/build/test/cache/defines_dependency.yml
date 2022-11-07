@@ -1,1 +1,7 @@
---- {}
+---
+build/test/mocks/mock_modbus_registers.c:
+- TEST
+build/test/mocks/mock_hardware.c:
+- TEST
+"../../src/ll_process_config.c":
+- TEST

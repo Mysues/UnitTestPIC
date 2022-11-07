@@ -2,6 +2,9 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
+#include "cmock.h"
+#include "mock_modbus_registers.h"
+#include "mock_hardware.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -10,7 +13,7 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_SquareOfFive(void);
+extern void test_Default_Init(void);
 
 
 /*=======Mock Management=====*/
@@ -19,12 +22,18 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
+  mock_modbus_registers_Init();
+  mock_hardware_Init();
 }
 static void CMock_Verify(void)
 {
+  mock_modbus_registers_Verify();
+  mock_hardware_Verify();
 }
 static void CMock_Destroy(void)
 {
+  mock_modbus_registers_Destroy();
+  mock_hardware_Destroy();
 }
 
 /*=======Test Reset Options=====*/
@@ -75,7 +84,8 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_config.c");
-  run_test(test_SquareOfFive, "test_SquareOfFive", 13);
+  run_test(test_Default_Init, "test_Default_Init", 20);
 
+  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }
