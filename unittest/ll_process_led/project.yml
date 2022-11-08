@@ -37,8 +37,6 @@
     - ../../src/**
   :include:
     - ../../header/**
-    - ../../mcc_generated_files/**
-    - support/**
   :support:
     - test/support
   :libraries: []
