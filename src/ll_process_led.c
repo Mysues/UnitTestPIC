@@ -1,5 +1,5 @@
 /*******************************************************************************
- * This file provide the initialization and the process function for all RGB 
+ * This file provide the initialization and the process function for all RGB
  * LEDs.
  * - process mirror the value of the modbus register to all LEDs colour
  * - init function turn off all LEDs
@@ -9,19 +9,21 @@
 
 #include "../header/ll_process_led.h"
 #include "../header/modbus_registers.h"
-#include "../mcc_generated_files/mcc.h"
 #include "../header/hardware.h"
 #include "stdbool.h"
 
 /*******************************************************************************
  * private variable
  ******************************************************************************/
-
-#define LED1_COUNT        64
-#define LED2_COUNT        64
+#ifndef TEST
+#define LED1_COUNT 64
+#define LED2_COUNT 64
+#else
+#define LED1_COUNT 3
+#define LED2_COUNT 3
+#endif
 
 const uint8_t bit_mask[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
-
 
 /*******************************************************************************
  * ledInterruptHandler
@@ -181,8 +183,8 @@ void led2Process(void)
 
 void led1Reset(void)
 {
-    PIC_RGB_CONTROL_SetLow();
-    __delay_us(100);
+    MCC_PIC_RGB_CONTROL_SetLow();
+    uC_delay_us(10);
 }
 
 void led1WriteByte(uint8_t data)
@@ -193,20 +195,23 @@ void led1WriteByte(uint8_t data)
         if ((data & bit_mask[i]) == 0)
         {
             //INTERRUPT_GlobalInterruptDisable();
-            PIC_RGB_CONTROL_SetHigh();
+            MCC_PIC_RGB_CONTROL_SetHigh();
+#ifndef TEST
             Nop();
             Nop();
             Nop();
             Nop();
             Nop();  //5
-            PIC_RGB_CONTROL_SetLow();
+#endif
+            MCC_PIC_RGB_CONTROL_SetLow();
             //INTERRUPT_GlobalInterruptEnable();
 
         }
         else
         {
             //INTERRUPT_GlobalInterruptDisable();
-            PIC_RGB_CONTROL_SetHigh();
+            MCC_PIC_RGB_CONTROL_SetHigh();
+#ifndef TEST
             Nop();
             Nop();
             Nop();
@@ -217,7 +222,8 @@ void led1WriteByte(uint8_t data)
             Nop();
             Nop();
             Nop();  //15
-            PIC_RGB_CONTROL_SetLow();
+#endif
+            MCC_PIC_RGB_CONTROL_SetLow();
             //INTERRUPT_GlobalInterruptEnable();
         }
     }
@@ -225,8 +231,8 @@ void led1WriteByte(uint8_t data)
 
 void led2Reset(void)
 {
-    PIC_RGB_CONTROL2_SetLow();
-    __delay_us(100);
+    MCC_PIC_RGB_CONTROL2_SetLow();
+    uC_delay_us(100);
 }
 
 void led2WriteByte(uint8_t data)
@@ -237,19 +243,22 @@ void led2WriteByte(uint8_t data)
         if ((data & bit_mask[i]) == 0)
         {
             //INTERRUPT_GlobalInterruptDisable();
-            PIC_RGB_CONTROL2_SetHigh();
+            MCC_PIC_RGB_CONTROL2_SetHigh();
+#ifndef TEST
             Nop();
             Nop();
             Nop();
             Nop();
             Nop();  //5
-            PIC_RGB_CONTROL2_SetLow();
+#endif
+            MCC_PIC_RGB_CONTROL2_SetLow();
             //INTERRUPT_GlobalInterruptEnable();
         }
         else
         {
             //INTERRUPT_GlobalInterruptDisable();
-            PIC_RGB_CONTROL2_SetHigh();
+            MCC_PIC_RGB_CONTROL2_SetHigh();
+#ifndef TEST
             Nop();
             Nop();
             Nop();
@@ -260,7 +269,8 @@ void led2WriteByte(uint8_t data)
             Nop();
             Nop();
             Nop();  //15
-            PIC_RGB_CONTROL2_SetLow();
+#endif
+            MCC_PIC_RGB_CONTROL2_SetLow();
             //INTERRUPT_GlobalInterruptEnable();
         }
     }
