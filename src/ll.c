@@ -5,8 +5,8 @@
 
 #include "ll.h"
 #include "modbus_registers.h"
-#include "modbus_rtu/modbus_rtu.h"
-#include "mcc_generated_files/mcc.h"
+#include "../modbus_rtu/header/modbus_rtu.h"
+#include "hardware.h"
 #include "ll_process_config.h"
 #include "ll_process_io.h"
 #include "ll_process_led.h"
