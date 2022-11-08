@@ -2,6 +2,7 @@
 #define	HARDWARE
 
 void uC_delay_ms(unsigned long ms);
+void uC_delay_us(unsigned long us);
 
 uint8_t MCC_ID0_GetValue(void);
 uint8_t MCC_ID1_GetValue(void);
@@ -30,5 +31,11 @@ uint8_t MCC_DATAEE_ReadByte(uint16_t bAdd);
 void MCC_DATAEE_WriteByte(uint16_t bAdd, uint8_t bData);
 
 void Set_Baudrate(uint8_t lowbyte, uint8_t highbyte);
+
+void MCC_PIC_RGB_CONTROL_SetHigh(void);
+void MCC_PIC_RGB_CONTROL_SetLow(void);
+
+void MCC_PIC_RGB_CONTROL2_SetHigh(void);
+void MCC_PIC_RGB_CONTROL2_SetLow(void);
 
 #endif

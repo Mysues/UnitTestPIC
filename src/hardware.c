@@ -6,6 +6,10 @@ void uC_delay_ms(unsigned long ms){
     __delay_ms(ms);
 }
 
+void uC_delay_us(unsigned long us){
+    __delay_us(us);
+}
+
 uint8_t MCC_ID0_GetValue(void)
 {
     return (uint8_t)ID0_GetValue();
@@ -106,4 +110,19 @@ void Set_Baudrate(uint8_t lowbyte, uint8_t highbyte)
 {
     SPBRG1 = lowbyte;
     SPBRGH1 = highbyte;
+}
+
+void MCC_PIC_RGB_CONTROL_SetHigh(void){
+    PIC_RGB_CONTROL_SetHigh();
+}
+
+void MCC_PIC_RGB_CONTROL_SetLow(void){
+    PIC_RGB_CONTROL_SetLow()
+}
+
+void MCC_PIC_RGB_CONTROL2_SetHigh(void){
+    PIC_RGB_CONTROL2_SetHigh();
+}
+void MCC_PIC_RGB_CONTROL2_SetLow(void){
+    PIC_RGB_CONTROL2_SetLow();
 }
