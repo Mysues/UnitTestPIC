@@ -3,13 +3,13 @@
  * processes of ll
  ******************************************************************************/ 
 
-#include "ll.h"
+#include "../header/ll.h"
 #include "modbus_registers.h"
 #include "../modbus_rtu/header/modbus_rtu.h"
-#include "hardware.h"
-#include "ll_process_config.h"
-#include "ll_process_io.h"
-#include "ll_process_led.h"
+#include "../header/hardware.h"
+#include "../header/ll_process_config.h"
+#include "../header/ll_process_io.h"
+#include "../header/ll_process_led.h"
 #include "stdbool.h"
 #include "stdint.h"
 
@@ -31,15 +31,15 @@ bool heartbeat_triggered = true;
 void llInit(void)
 {
     //timer interrupt handler
-    TMR0_SetInterruptHandler(modbusProcessHandler);
-    TMR1_SetInterruptHandler(modbusTimeoutHandler);
-    TMR2_SetInterruptHandler(millisHandler);
-    EUSART1_SetRxInterruptHandler(uartReceiveHandler);
+    MCC_TMR0_SetInterruptHandler(modbusProcessHandler);
+    MCC_TMR1_SetInterruptHandler(modbusTimeoutHandler);
+    MCC_TMR2_SetInterruptHandler(millisHandler);
+    MCC_EUSART1_SetRxInterruptHandler(uartReceiveHandler);
     
     //modbus init
     modbusRegistersInit();
     //initialize tx and rx handler
-    MODBUS_RTU_UartHandler(EUSART1_is_rx_ready, EUSART1_Read, EUSART1_Write);
+    MODBUS_RTU_UartHandler(MCC_EUSART1_is_rx_ready, MCC_EUSART1_Read, MCC_EUSART1_Write);
     //initialize interrupt enable and disable handler
     MODBUS_RTU_InterruptHandler(interruptDisableAll, interruptEnableAll);
     //initialize modbus_registers
@@ -90,7 +90,7 @@ void llProcess(void)
 void modbusProcessHandler(void)
 {
     //stop timer
-    TMR0_StopTimer();
+    MCC_TMR0_StopTimer();
     
     //process modbus
     MODBUS_RTU_ProcessFrame();
@@ -99,7 +99,7 @@ void modbusProcessHandler(void)
 void modbusTimeoutHandler(void)
 {
     //stop timer after timeout happened
-    TMR1_StopTimer();
+    MCC_TMR1_StopTimer();
     
     //modbus timeout triggered
     MODBUS_RTU_Timeout();
@@ -114,21 +114,21 @@ void millisHandler(void)
 void uartReceiveHandler(void)
 {
     //stop timeout timer
-    TMR1_StopTimer();
+    MCC_TMR1_StopTimer();
     
     //call default RX handler
-    EUSART1_Receive_ISR();
+    MCC_EUSART1_Receive_ISR();
  
     //start timeout timer
-    TMR1_Reload();
-    TMR1_StartTimer();
+    MCC_TMR1_Reload();
+    MCC_TMR1_StartTimer();
     
     //disable service routine if modbus id is zero (device disabled)
     if (modbus_registers[IND_MODBUS_ID] == 0) return;
 
     //start process timer
-    TMR0_Reload();
-    TMR0_StartTimer();
+    MCC_TMR0_Reload();
+    MCC_TMR0_StartTimer();
 }
 
 
@@ -141,14 +141,14 @@ void uartReceiveHandler(void)
 
 void interruptEnableAll(void)
 {
-    INTERRUPT_GlobalInterruptHighEnable();
+    MCC_INTERRUPT_GlobalInterruptHighEnable();
     //INTERRUPT_GlobalInterruptLowEnable();
 }
 
 void interruptDisableAll(void)
 {
-    INTERRUPT_GlobalInterruptHighDisable();
-    //INTERRUPT_GlobalInterruptLowDisable();    
+    MCC_INTERRUPT_GlobalInterruptHighDisable();
+    //INTERRUPT_GlobalInterruptLowDisable();   
 }
 
 /*******************************************************************************
@@ -204,32 +204,32 @@ void comLedProcess(void)
     if (state == 0)
     {
         //Status LED ON
-        LED_STATUS_SetHigh();
+        MCC_LED_STATUS_SetHigh();
         //COM LED OFF
-        LED_COM_SetLow();
+        MCC_LED_COM_SetLow();
     }
     //device enabled, but heartbeat timeout
     else if (state == 1)
     {
         //Status LED ON
-        LED_STATUS_SetHigh();
+        MCC_LED_STATUS_SetHigh();
         //COM LED blink at 1Hz
         if ((millis - millis_com) > blink_period_slow)
         {
             millis_com += blink_period_slow;
-            LED_COM_Toggle();
+            MCC_LED_COM_Toggle();
         }
     }
     //device enabled, communication normal
     else
     {
         //Status LED ON
-        LED_STATUS_SetHigh();
+        MCC_LED_STATUS_SetHigh();
         //COM LED blink at 1Hz
         if ((millis - millis_com) > blink_period_fast)
         {
             millis_com += blink_period_fast;
-            LED_COM_Toggle();
+            MCC_LED_COM_Toggle();
         }
     }
 }
