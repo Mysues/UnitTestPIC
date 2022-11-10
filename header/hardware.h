@@ -1,6 +1,8 @@
 #ifndef HARDWARE
 #define	HARDWARE
 
+#include <stdbool.h>
+
 void uC_delay_ms(unsigned long ms);
 void uC_delay_us(unsigned long us);
 
@@ -37,5 +39,31 @@ void MCC_PIC_RGB_CONTROL_SetLow(void);
 
 void MCC_PIC_RGB_CONTROL2_SetHigh(void);
 void MCC_PIC_RGB_CONTROL2_SetLow(void);
+
+void MCC_TMR0_SetInterruptHandler(void (* InterruptHandler)(void));
+void MCC_TMR1_SetInterruptHandler(void (* InterruptHandler)(void));
+void MCC_TMR2_SetInterruptHandler(void (* InterruptHandler)(void));
+
+void MCC_EUSART1_SetRxInterruptHandler(void (* interruptHandler)(void));
+bool MCC_EUSART1_is_rx_ready(void);
+uint8_t MCC_EUSART1_Read(void);
+void MCC_EUSART1_Write(uint8_t data);
+
+void MCC_TMR0_StartTimer(void);
+void MCC_TMR0_StopTimer(void);
+void MCC_TMR1_StartTimer(void);
+void MCC_TMR1_StopTimer(void);
+
+void MCC_TMR0_Reload(void);
+void MCC_TMR1_Reload(void);
+
+void MCC_EUSART1_Receive_ISR(void);
+
+void MCC_INTERRUPT_GlobalInterruptHighEnable(void);
+void MCC_INTERRUPT_GlobalInterruptHighDisable(void);
+
+void MCC_LED_STATUS_SetHigh(void);
+void MCC_LED_COM_SetLow(void);
+void MCC_LED_COM_Toggle(void);
 
 #endif
